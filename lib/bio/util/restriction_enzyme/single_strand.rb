@@ -5,13 +5,13 @@
 # Copyright:: Copyright (c) 2005-2007 Midwinter Laboratories, LLC (http://midwinterlabs.com)
 # License::   The Ruby License
 #
-#  $Id:$
-#
 
-require 'bio/util/restriction_enzyme'
 require 'bio/sequence'
 
 module Bio
+
+require 'bio/util/restriction_enzyme' unless const_defined?(:RestrictionEnzyme)
+
 class RestrictionEnzyme
 
 # A single strand of restriction enzyme sequence pattern with a 5' to 3' 
@@ -68,8 +68,9 @@ class SingleStrand < Bio::Sequence::NA
   # *Returns*:: nothing
   def initialize( sequence, *c )
     c.flatten! # if an array was supplied as an argument
-    validate_args(sequence, c)
-    sequence.downcase!
+  # NOTE t| 2009-09-19 commented out for library efficiency
+    # validate_args(sequence, c)
+    sequence = sequence.downcase
     
     if sequence =~ re_cut_symbol
       @cut_locations_in_enzyme_notation = CutLocationsInEnzymeNotation.new( strip_padding(sequence) )

@@ -5,13 +5,15 @@
 #
 # License:: The Ruby License
 #
-#  $Id: test_flatfile.rb,v 1.2 2007/04/05 23:35:43 trevor Exp $
+#  $Id:$
 #
 
+# loading helper routine for testing bioruby
 require 'pathname'
-libpath = Pathname.new(File.join(File.dirname(__FILE__), ['..'] * 5, 'lib')).cleanpath.to_s
-$:.unshift(libpath) unless $:.include?(libpath)
+load Pathname.new(File.join(File.dirname(__FILE__), ['..'] * 4,
+                            'bioruby_test_helper.rb')).cleanpath.to_s
 
+# libraries needed for the tests
 require 'test/unit'
 require 'bio'
 
@@ -20,10 +22,7 @@ module Bio::TestFlatFile
   # testing default AutoDetect's behavior
   class TestDefaultAutoDetect < Test::Unit::TestCase
     
-    bioruby_root = Pathname.new(File.join(File.dirname(__FILE__),
-                                          ['..'] * 5)).cleanpath.to_s
-    TestDataPath = Pathname.new(File.join(bioruby_root,
-                                          'test', 'data')).cleanpath.to_s
+    TestDataPath = BioRubyTestDataPath
 
     def setup
       @ad = Bio::FlatFile::AutoDetect.default
@@ -347,6 +346,12 @@ __END_OF_TEXT__
 
 #    def test_sim4
 #    end
+
+    def test_fastq
+      fn = File.join(TestDataPath, 'fastq', 'longreads_original_sanger.fastq')
+      text = File.read(fn, length=300)
+      assert_equal(Bio::Fastq, @ad.autodetect(text))
+    end
 
     def test_fastaformat
       fn = File.join(TestDataPath, 'fasta', 'example1.txt')

@@ -8,12 +8,6 @@
 #               Jan Aerts <jan.aerts@bbsrc.ac.uk>
 # License::     The Ruby License
 #
-# = TODO
-#
-# porting from N. Goto's feature-output.rb on BioRuby list.
-#
-# $Id: format.rb,v 1.4.2.8 2008/06/17 15:50:05 ngoto Exp $
-#
 
 require 'erb'
 
@@ -46,6 +40,22 @@ module Format
     # NCBI-style Fasta format generatar
     # (resemble to EMBOSS "ncbi" format)
     autoload :Fasta_ncbi, 'bio/db/fasta/format_fasta'
+
+    # FASTQ "fastq-sanger" format generator
+    autoload :Fastq, 'bio/db/fastq/format_fastq'
+    # FASTQ "fastq-sanger" format generator
+    autoload :Fastq_sanger, 'bio/db/fastq/format_fastq'
+    # FASTQ "fastq-solexa" format generator
+    autoload :Fastq_solexa, 'bio/db/fastq/format_fastq'
+    # FASTQ "fastq-illumina" format generator
+    autoload :Fastq_illumina, 'bio/db/fastq/format_fastq'
+
+    # FastaNumericFormat format generator
+    autoload :Fasta_numeric, 'bio/db/fasta/format_qual'
+    # Qual format generator.
+    # Its format is the same as Fasta_numeric, but it would perform
+    # to convert quality score or generates scores from error probability.
+    autoload :Qual, 'bio/db/fasta/format_qual'
 
   end #module Formatter
 
@@ -165,6 +175,20 @@ module Format
     a.flatten!
     a.collect! { |x| x.to_s.downcase.intern }
     a
+  end
+
+  # The same as output(:fasta, :header=>definition, :width=>width)
+  # This method is intended to replace Bio::Sequence#to_fasta.
+  #
+  #   s = Bio::Sequence.new('atgc')
+  #   puts s.output_fasta                   #=> "> \natgc\n"
+  # ---
+  # *Arguments*: 
+  # * (optional) _definition_: (String) definition line
+  # * (optional) _width_: (Integer) width (default 70)
+  # *Returns*:: String object
+  def output_fasta(definition = nil, width = 70)
+    output(:fasta, :header=> definition, :width => width)
   end
 
   private
